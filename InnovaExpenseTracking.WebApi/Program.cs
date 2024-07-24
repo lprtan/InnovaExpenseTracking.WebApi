@@ -1,4 +1,5 @@
 
+using Hangfire;
 using InnovaExpenseTracking.WebApi.Context;
 using InnovaExpenseTracking.WebApi.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,6 +15,10 @@ namespace InnovaExpenseTracking.WebApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddHangfire(configuration =>
+    configuration.UseSqlServerStorage("Data Source=ALPERENTAN;Initial Catalog=ExpenseTrackingAppDb;Integrated Security=True;Connect Timeout=60;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));
+            builder.Services.AddHangfireServer();
 
             builder.Services.AddControllers();
 
@@ -69,6 +74,8 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
             });
 
             var app = builder.Build();
+
+            app.UseHangfireDashboard("/hangfire");
 
             if (app.Environment.IsDevelopment())
             {
