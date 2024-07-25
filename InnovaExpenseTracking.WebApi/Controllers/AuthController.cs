@@ -41,7 +41,7 @@ namespace InnovaExpenseTracking.WebApi.Controllers
                 Name = request.Name,
                 Email = request.Email,
                 Password = request.Password,
-                //Role = request.Role,
+                Role = "user",
                 CreatedTime = DateTime.UtcNow
             };
 
@@ -68,8 +68,9 @@ namespace InnovaExpenseTracking.WebApi.Controllers
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Name, user.Email),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-        }),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role)
+                }),
                 Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration.GetSection("Jwt:ExpiryInMinutes").Value)),
                 Issuer = _configuration.GetSection("Jwt:Issuer").Value,
                 Audience = _configuration.GetSection("Jwt:Audience").Value,

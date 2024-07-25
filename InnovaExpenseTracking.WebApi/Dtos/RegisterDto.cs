@@ -2,12 +2,9 @@
 {
     public sealed class RegisterDto : BaseUserDto
     {
-        public int Role { get; set; }
-
-        public RegisterDto(string name, string email, string password, int role)
+        public RegisterDto(string name, string email, string password)
        : base(name, email, password)
         {
-            this.Role = role;
         }
     }
 }

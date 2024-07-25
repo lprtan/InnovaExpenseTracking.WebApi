@@ -18,7 +18,7 @@ namespace InnovaExpenseTracking.WebApi.Controllers
             _context = context;
         }
 
-        [Authorize]
+        [Authorize(Roles ="user")]
         [HttpGet]
         public async Task<IActionResult> GetTotalExpenditure(CancellationToken cancellationToken)
         {
