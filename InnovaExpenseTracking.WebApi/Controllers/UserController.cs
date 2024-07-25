@@ -4,6 +4,7 @@ using InnovaExpenseTracking.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace InnovaExpenseTracking.WebApi.Controllers
@@ -24,9 +25,20 @@ namespace InnovaExpenseTracking.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUser(CancellationToken cancellationToken)
         {
-            var users = await _context.Users.ToListAsync(cancellationToken);
+            List<User> users = new List<User>();
 
-            return Ok(users);
+            try
+            {
+                await _context.ExecuteTransactionAsync(async () =>
+                {
+                    users = await _context.Users.ToListAsync(cancellationToken);
+                }, cancellationToken);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
         }
 
         [Authorize]

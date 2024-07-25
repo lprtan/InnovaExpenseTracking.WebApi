@@ -51,15 +51,27 @@ namespace InnovaExpenseTracking.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AggregateUserExpensesDaily(CancellationToken cancellationToken)
         {
-            var totalExpenditure = await GetUserTotalExpenses(cancellationToken);
+            try
+            {
+                decimal totalExpenditure = 0;
+                await _context.ExecuteTransactionAsync(async () =>
+                {
+                    totalExpenditure = await GetUserTotalExpenses(cancellationToken);
 
-            RecurringJob.AddOrUpdate(
-        "aggregate-user-expenses-job",
-        () => Console.WriteLine($"Kullanıcının Günlük Toplam Masrafı: {totalExpenditure}"),
-        Cron.Daily
-        );
+                    RecurringJob.AddOrUpdate(
+                        "aggregate-user-expenses-daily-job",
+                        () => Console.WriteLine($"Kullanıcının Günlük Toplam Masrafı: {totalExpenditure}"),
+                        Cron.Daily
+                    );
 
-            return Ok(new { TotalExpenditure = totalExpenditure });
+                }, cancellationToken);
+
+                return Ok(new { TotalExpenditure = totalExpenditure });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
 
         }
 
@@ -67,30 +79,54 @@ namespace InnovaExpenseTracking.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AggregateUserExpensesWeekly(CancellationToken cancellationToken)
         {
-            var totalExpenditure = await GetUserTotalExpenses(cancellationToken);
-            
-            RecurringJob.AddOrUpdate(
-        "aggregate-user-expenses-job",
-        () => Console.WriteLine($"Kullanıcının Günlük Toplam Masrafı: {totalExpenditure}"),
-        Cron.Weekly
-        );
+            try
+            {
+                decimal totalExpenditure = 0;
+                await _context.ExecuteTransactionAsync(async () =>
+                {
+                    totalExpenditure = await GetUserTotalExpenses(cancellationToken);
 
-            return Ok(new { TotalExpenditure = totalExpenditure });
+                    RecurringJob.AddOrUpdate(
+                        "aggregate-user-expenses-daily-job",
+                        () => Console.WriteLine($"Kullanıcının Günlük Toplam Masrafı: {totalExpenditure}"),
+                        Cron.Weekly
+                    );
+
+                }, cancellationToken);
+
+                return Ok(new { TotalExpenditure = totalExpenditure });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
         }
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> AggregateUserExpensesMonthly(CancellationToken cancellationToken)
         {
-            var totalExpenditure = await GetUserTotalExpenses(cancellationToken);
+            try
+            {
+                decimal totalExpenditure = 0;
+                await _context.ExecuteTransactionAsync(async () =>
+                {
+                    totalExpenditure = await GetUserTotalExpenses(cancellationToken);
 
-            RecurringJob.AddOrUpdate(
-         "aggregate-user-expenses-job",
-          () => Console.WriteLine($"Kullanıcının Günlük Toplam Masrafı: {totalExpenditure}"),
-          Cron.Monthly
-         );
+                    RecurringJob.AddOrUpdate(
+                        "aggregate-user-expenses-daily-job",
+                        () => Console.WriteLine($"Kullanıcının Günlük Toplam Masrafı: {totalExpenditure}"),
+                        Cron.Monthly
+                    );
 
-            return Ok(new { TotalExpenditure = totalExpenditure });
+                }, cancellationToken);
+
+                return Ok(new { TotalExpenditure = totalExpenditure });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
         }
     }
 }

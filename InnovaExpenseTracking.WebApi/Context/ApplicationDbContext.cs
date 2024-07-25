@@ -26,5 +26,20 @@ namespace InnovaExpenseTracking.WebApi.Context
 
             base.OnModelCreating(modelBuilder);
         }
+
+        public async Task ExecuteTransactionAsync(Func<Task> action, CancellationToken cancellationToken)
+        {
+            using var transaction = await Database.BeginTransactionAsync(cancellationToken);
+            try
+            {
+                await action();
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        }
     }
 }

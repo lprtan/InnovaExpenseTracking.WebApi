@@ -1,6 +1,7 @@
 ﻿using InnovaExpenseTracking.WebApi.Context;
 using InnovaExpenseTracking.WebApi.Dtos;
 using InnovaExpenseTracking.WebApi.Models;
+using InnovaExpenseTracking.WebApi.Token;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

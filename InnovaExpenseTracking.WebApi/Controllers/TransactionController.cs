@@ -19,7 +19,7 @@ namespace InnovaExpenseTracking.WebApi.Controllers
             _context = context;
         }
 
-        [Authorize]
+        [Authorize(Roles ="user")]
         [HttpGet]
         public async Task<IActionResult> GetTransaction(CancellationToken cancellationToken)
         {
@@ -38,7 +38,7 @@ namespace InnovaExpenseTracking.WebApi.Controllers
             return Ok(transactions);
         }
 
-        [Authorize]
+        [Authorize(Roles ="user")]
         [HttpPost]
         public async Task<IActionResult> AddTransaction(TransactionDto request, CancellationToken cancellationToken)
         {
@@ -72,7 +72,7 @@ namespace InnovaExpenseTracking.WebApi.Controllers
             return Ok(transaction);
         }
 
-        [Authorize]
+        [Authorize(Roles = "user")]
         [HttpDelete("{name}")]
         public async Task<IActionResult> DeleteTransaction(string name, CancellationToken cancellationToken)
         {
@@ -95,7 +95,7 @@ namespace InnovaExpenseTracking.WebApi.Controllers
             return Ok(transaction);
         }
 
-        [Authorize]
+        [Authorize(Roles = "user")]
         [HttpPut("{name}")]
         public async Task<IActionResult> UpdateTransaction(TransactionDto request, string name, CancellationToken cancellationToken)
         {
